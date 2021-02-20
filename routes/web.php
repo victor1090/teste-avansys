@@ -16,3 +16,16 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('welcome');
 });
+
+Use App\Http\Controllers\OperadoraController;
+Route::prefix('operadoras/')->group(function () {
+    Route::get('',[OperadoraController::class,'index'])->name('operadora.index');
+    Route::post('',[OperadoraController::class,'store'])->name('operadora.store');
+    Route::get('/{operadora}',[OperadoraController::class,'show'])->name('operadora.show');
+    Route::put('/{operadora}',[OperadoraController::class,'update'])->name('operadora.update');
+    Route::delete('/{operadora}',[OperadoraController::class,'destroy'])->name('operadora.destroy');
+
+});
+
+
+
