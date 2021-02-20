@@ -5,18 +5,19 @@ namespace Database\Seeders;
 
 
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
 
 class OperadorasTableSeeder extends Seeder
 {
     public function run()
     {
-        DB::table('operadora')->insert([
+        DB::table('operadoras')->insert([
             'nome' => "Cielo",
             'descricao' => 'Operadora Cielo',
             'status' => true,
         ]);
 
-        DB::table('operadora')->insert([
+        DB::table('operadoras')->insert([
             'nome' => "Mercado Pago",
             'descricao' => 'Operadora Mercado Pago',
             'status' => true,

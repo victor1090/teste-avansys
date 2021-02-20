@@ -18,7 +18,6 @@ class CreateOperadorasTable extends Migration
             $table->String('nome');
             $table->String('descricao');
             $table->boolean('status');
-            $table->timestamps();
         });
     }
 
