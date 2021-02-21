@@ -27,5 +27,10 @@ Route::prefix('operadoras/')->group(function () {
 
 });
 
+Route::get('/token', function (Request $request) {
+    $token = csrf_token();
+    return $token;
+});
+
 
 
