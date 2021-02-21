@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreOperadoraRequest;
 use App\Models\Operadora;
 use Illuminate\Http\Request;
 use function PHPUnit\Framework\isEmpty;
 use function PHPUnit\Util\Test;
+use Illuminate\Support\Facades\Validator;
 
 class OperadoraController extends Controller
 {
@@ -34,12 +36,23 @@ class OperadoraController extends Controller
      */
     public function store(Request $request)
     {
-        $operadora = new Operadora();
-        $operadora->nome = $request->nome;
-        $operadora->descricao = $request->descricao;
-        $operadora->status = true;
-        if($operadora->save()){
-            return response($operadora, 201);
+        $validator = Validator::make($request->all(), [
+            'nome' => 'required',
+            'descricao' => 'required',
+            ],
+            $messages = [
+            'required' => 'O campo :attribute é obrigatório.',
+        ]);
+        if ($validator->fails()) {
+            return response()->json($validator->messages(), 400);
+        }else{
+            $operadora = new Operadora();
+            $operadora->nome = $request->nome;
+            $operadora->descricao = $request->descricao;
+            $operadora->status = true;
+            if($operadora->save()){
+                return response($operadora, 201);
+            }
         }
     }
 
@@ -74,13 +87,13 @@ class OperadoraController extends Controller
      */
     public function update(Request $request, Operadora $operadora)
     {
-        if(!isEmpty($request->nome)){
+        if($request->has('nome')){
             $operadora->nome = $request->nome;
         }
-        if(!isEmpty($request->descricao)){
+        if($request->has('descricao')){
             $operadora->descricao = $request->descricao;
         }
-        if(!isEmpty($request->status)){
+        if($request->has('status')){
             $operadora->status = $request->status;
         }
         if($operadora->save()){
