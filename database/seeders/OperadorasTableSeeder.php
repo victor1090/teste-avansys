@@ -22,5 +22,10 @@ class OperadorasTableSeeder extends Seeder
             'descricao' => 'Operadora Mercado Pago',
             'status' => true,
         ]);
+        DB::table('operadoras')->insert([
+            'nome' => "Teste",
+            'descricao' => 'Operadora Teste 1',
+            'status' => true,
+        ]);
     }
 }

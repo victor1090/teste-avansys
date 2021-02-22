@@ -19,7 +19,11 @@ class OperadoraController extends Controller
     public function index()
     {
         $operadoras = Operadora::all();
-        return $operadoras;
+        $operadorasview = [];
+        foreach($operadoras as $index =>$operadora){
+            $operadorasview[$index] = $operadora;
+        }
+        return response($operadorasview,200)->header("Access-Control-Allow-Origin", "*");
     }
 
     /**

@@ -27,12 +27,10 @@ services:
     depends_on:
       - mysql
     command:
-        bash -c "php artisan serve --host=0.0.0.0 --port=8000"
+       bash -c "php artisan serve --host=0.0.0.0 --port=8000"
     ports:
       - "8000:8000"
     volumes:
       - ./teste-avansys:/app
       - ./teste-avansys/.env-docker:/app/.env
       - /app/vendor
-
-      

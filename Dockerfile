@@ -24,6 +24,8 @@ RUN docker-php-ext-install pdo_mysql zip exif pcntl
 
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
+RUN curl -sL https://deb.nodesource.com/setup_14.x | bash - && apt-get install -y nodejs
+
 # Copy composer.lock and composer.json
 COPY composer.lock composer.json /app/
 
@@ -38,7 +40,10 @@ RUN rm -rf /app/vendor
 RUN rm -rf /app/public/storage
 RUN rm -rf /app/bootstrap/cache/config.php
 RUN chmod 755 storage /app/bootstrap/cache
+RUN npm install
+RUN npm run dev
 RUN composer install --no-scripts
 RUN php artisan storage:link
+
 
 EXPOSE 8000
