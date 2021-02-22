@@ -5,12 +5,22 @@
   - VUE.js;
   - Laravel 7 USANDO padrão REST;
   - Banco opcional;
+## Arquitetura
+- Backend Laravel
+- Frontend VUE
+- Banco de Dados MySQL
 
-## Informações adicionais.
-1) No seu fork crie um readme.md contendo as seguintes informações.
-    - Qual arquitetura utilizada no seu projeto.
-    - Teve algum problema no momento do desenvolvimento que gostaria de nos dizer?
-    - Fez algo adicional que não estava previsto nesse documento e gostaria de nos dizer?
+### DOCKER
+- 3 Containers
+- MySQL
+- PHPADMIN
+- Avansys - Contém a Aplicação
+
+## Desafios
+- Antes do desafio eu não tinha conhecimento no framework Vue, então tive que aprender a sintax no decorrer do desafio.
+- Aprender a utilizar um framework em menos de dois dias foi uma grande barreira que consegui superá-la.
+- Tive um pequeno problema com a validação utilizando o FormRequest no Laravel, pois o mesmo retornava a mensagem de error internamente para a view e eu não consegui
+acessa-lá no Controlador, resolvi isso criando um validador manual no método.
   
 ## Objetivos do desafio:  
 
@@ -21,7 +31,7 @@
 4)   Criar um serviço para excluir a operadora
 
 ### Frontend
-1)   Seguir o protótipo 
+1)   Seguir o protótipo
  - https://www.figma.com/file/kgmFNAmWJoRuUUoau9Evgg/Exerc%C3%ADcio-Front-End-Vue?node-id=8%3A625
 
 ## Diferenciais.
