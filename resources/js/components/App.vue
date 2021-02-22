@@ -31,39 +31,21 @@
                 </b-button>
                 <br><br>
 
-                <b-alert id="alert_error" show variant="danger" v-show="exibirErro">{{mensagemErro}}</b-alert>
                 <div id="tabela">
-                    <table class="table table-bordered" id="table-operadoras">
-                        <tr>
-                            <th>Operadora</th>
-                            <th>Descrição</th>
-                            <th colspan="3">Ações</th>
-                        </tr>
-                        <tr v-for="(operadora,index) in operadoras.filter((operadora) => operadora.nome.includes(selected1))" :key="operadora.id">
-                            <td v-if="selected2 == null || selected2 == operadora.status">{{ operadora.nome }}</td>
-                            <td v-if="selected2 == null || selected2 == operadora.status">{{ operadora.descricao }}</td>
-
-                            <td colspan="3" v-if="selected2 == null || selected2 == operadora.status">
-                                <b-button class="botao" v-if="operadora.status" pill variant="outline-warning" size="sm" @click="modalEditarShow(operadora.id)">
-                                    <b-icon icon="pencil" scale="1" variant="outline-secondary"></b-icon> Editar
-                                </b-button>
-                                <b-button class="botao" v-if="operadora.status" pill variant="outline-danger" size="sm" @click="setarId(operadora.id,'excluir')">
-                                    <b-icon icon="x-circle" scale="1" variant="outline-secondary"></b-icon> Excluir
-                                </b-button>
-                                <b-button class="botao" v-if="operadora.status" pill variant="outline-secondary" size="sm" @click="setarId(operadora.id,'desabilitar')">
-                                    <b-icon icon="caret-down" scale="1"></b-icon> Desabilitar
-                                </b-button>
-                            </td>
-                        </tr>
-                    </table>
+                    <div class="row linha">
+                        <div class="coluna">Operadora</div>
+                        <div class="coluna">Descrição</div>
+                        <div class="coluna3">Ações</div>
+                    </div>
+                    <div class="linha" v-for="(operadora,index) in operadoras.filter((operadora) => operadora.nome.includes(selected1))" :key="operadora.id">
+                        <Operadora :operadora="operadora" :filtro_status="selected2"
+                                   @meDelete="deletarOperadora($event)" @meDesabilite="desabilitarOperadora($event)">
+                        </Operadora>
+                    </div>
                 </div>
 
             </div>
         </div>
-
-
-
-
 
         <div>
             <b-modal id="bv-modal-cadastro" ref="bv-modal-cadastro" hide-footer @hidden="modalCadastroHide">
@@ -95,63 +77,14 @@
             </b-modal>
         </div>
 
-        <div>
-            <b-modal id="bv-modal-editar" ref="bv-modal-editar" hide-footer @hidden="modalEditarHide">
-                <template #modal-title>
-                    Editar operadora
-                </template>
-                <div class="d-block">
-                    <b-form-group id="group-1" label="Nome da Operadora:" label-for="input-1">
-                        <b-form-input
-                            id="input-1"
-                            v-model="formEditar.nome"
-                            type="text"
-                            placeholder="Digite o nome da Operadora"
-                            required
-                        ></b-form-input>
-                    </b-form-group>
-
-                    <b-form-group id="group-2" label="Descrição:" label-for="input-2">
-                        <b-form-input
-                            id="input-2"
-                            v-model="formEditar.descricao"
-                            placeholder="Digite a descricao da Operadora"
-                            required
-                        ></b-form-input>
-                    </b-form-group>
-                    <b-button pill variant="outline-warning" class="mt-3" block @click="editarOperadora()">Editar</b-button>
-                </div>
-                <b-button class="mt-3" pill variant="outline-secondary" block @click="$bvModal.hide('bv-modal-editar')">Voltar</b-button>
-            </b-modal>
-        </div>
-
-        <div>
-            <b-modal id="bv-modal-excluir" ref="bv-modal-excluir" hide-footer @hidden="modalEditarHide">
-                <template #modal-title>
-                    Tem certeza que deseja excluir essa Operadora?
-                </template>
-                <b-button pill variant="outline-danger" class="mt-3" block @click="excluirOperadora()">Excluir</b-button>
-                <b-button class="mt-3" pill variant="outline-secondary" block @click="$bvModal.hide('bv-modal-excluir')">Voltar</b-button>
-            </b-modal>
-        </div>
-
-        <div>
-            <b-modal id="bv-modal-desabilitar" ref="bv-modal-desabilitar" hide-footer @hidden="modalEditarHide">
-                <template #modal-title>
-                    Tem certeza que deseja desabilitar essa Operadora?
-                </template>
-                Ao desabilitar esta operadora, você só poderá consulta-lá, mas não poderá mais reativa-lá.
-                <b-button pill variant="outline-danger" class="mt-3" block @click="desabilitarOperadora()">Desabilitar</b-button>
-                <b-button class="mt-3" pill variant="outline-secondary" block @click="$bvModal.hide('bv-modal-desabilitar')">Voltar</b-button>
-            </b-modal>
-        </div>
-
     </div>
 </template>
 
 <script>
+import Operadora from "./Operadora";
 export default {
     name: "App",
+    components: {Operadora},
     data() {
         return {
             operadoras: [],
@@ -159,17 +92,7 @@ export default {
             todos: '',
             selected1: '',
             selected2: null,
-            exibirErro: false,
-            mensagemErro: null,
-            id_excluir: '',
-            id_desabilitar: '',
             form: {
-                nome: '',
-                descricao: '',
-                _token: '',
-            },
-            formEditar: {
-                id: '',
                 nome: '',
                 descricao: '',
                 _token: '',
@@ -198,27 +121,6 @@ export default {
                 this.inicioTabela = $event - 1;
             }
         },
-        setarId: function($id,acao){
-            if(acao == 'excluir'){
-                this.id_excluir = $id;
-                this.$refs['bv-modal-excluir'].show();
-            }else{
-                this.id_desabilitar = $id;
-                this.$refs['bv-modal-desabilitar'].show();
-            }
-        },
-        excluirOperadora: function () {
-            axios.delete("http://localhost:8000/operadoras/" + this.id_excluir).then(res => {
-                if (res.status = 204) {
-                    var newArray = this.operadoras.filter((operadora) => operadora.id != this.id_excluir);
-                    this.operadoras = newArray;
-                } else {
-                    this.exibirErro = true;
-                    this.mensagemErro = "Erro ao excluir a Operadora.";
-                }
-            });
-            this.$refs['bv-modal-excluir'].hide();
-        },
         cadastrarOperadora: function () {
             this.form._token = this._token;
             axios.post("http://localhost:8000/operadoras/", this.form).then(res => {
@@ -227,47 +129,23 @@ export default {
 
             })
         },
-        editarOperadora: function(){
-            axios.put("http://localhost:8000/operadoras/"+this.formEditar.id,this.formEditar).then(res => {
-                var newArray = this.operadoras.filter((operadora) => operadora.id != this.formEditar.id);
-                this.operadoras = newArray;
-                this.operadoras.push(res.data);
-            });
-            this.$refs['bv-modal-editar'].hide();
+        deletarOperadora: function ($event) {
+            var idDelete = $event.id;
+            var newArray = this.operadoras.filter((operadora) => operadora.id != idDelete);
+            this.operadoras = newArray;
         },
-
-        desabilitarOperadora: function(){
-            var form = {
-                _token: this._token,
-                status: 0,
-            }
-            axios.put("http://localhost:8000/operadoras/"+this.id_desabilitar,form).then(res => {
-                var newArray = this.operadoras.filter((operadora) => operadora.id != this.id_desabilitar);
-                this.operadoras = newArray;
-                this.operadoras.push(res.data);
-            });
-            this.$refs['bv-modal-desabilitar'].hide();
+        desabilitarOperadora: function ($event) {
+            var id = $event.id;
+            var data = $event.res.data;
+            var newArray = this.operadoras.filter((operadora) => operadora.id != id);
+            this.operadoras = newArray;
+            this.operadoras.push(data);
+            console.log(data);
         },
-
         modalCadastroHide: function(){
             this.form.nome = '';
             this.form.descricao = '';
         },
-
-        modalEditarHide: function(){
-            this.formEditar.nome = '';
-            this.formEditar.descricao = '';
-        },
-
-        modalEditarShow: function($id){
-            var operadora = this.operadoras.filter((operadora) => operadora.id == $id);
-            this.formEditar.id = operadora[0].id;
-            this.formEditar.nome = operadora[0].nome;
-            this.formEditar.descricao = operadora[0].descricao;
-            this.formEditar._token = this._token;
-            this.$refs['bv-modal-editar'].show();
-        }
-
     },
 }
 
@@ -282,7 +160,7 @@ export default {
         background-color: #F8F8FF;
     }
     #interno {
-        width:90%;
+        width:100%;
         padding: 2%;
         background-color: #ffffff;
 
@@ -298,5 +176,25 @@ export default {
     }
     .botao{
         margin-right: 20px;
+    }
+    #tabela:before,
+    #tabela:after{
+        content: "";
+        display: table;
+    }
+    .linha{
+        width:1000px;
+    }
+    .coluna{
+        width:30%;
+        position: relative;
+        left:0px;
+        padding-left: 3%;
+    }
+    .coluna3{
+        width:40%;
+        position: relative;
+        left:0px;
+        padding-left: 3%;
     }
 </style>
